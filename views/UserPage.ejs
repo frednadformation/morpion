@@ -12,9 +12,9 @@
 </head>
 
 <body>
-    <div class="container text-center" style="margin: 300px 0px 0px 850px;">
+    <div class="container text-center" style="margin: 5% 5% 0% 40%; ">
         <div class="row">
-            <div class="btn"  id="1" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="1" style="border: 2px solid black;height: 120px; width: 120px;"></div>
             <div class="btn" id="2" style="border: 2px solid black;height: 120px; width: 120px;"></div>
             <div class="btn" id="3" style="border: 2px solid black;height: 120px; width: 120px;"></div>
         </div>
@@ -28,84 +28,127 @@
             <div class="btn" id="8" style="border: 2px solid black;height: 120px; width: 120px;"></div>
             <div class="btn" id="9" style="border: 2px solid black;height: 120px; width: 120px;"></div>
         </div>
+        <div id="score">
+            <p>Score Joueur 1 : <span id="score1">0</span></p>
+            <p>Score Joueur 2 : <span id="score2">0</span></p>
+            <p>Match nuls : <span id="nul">0</span></p>
+            <button id="reset-btn">Reset Game</button>
+
+        </div>
+        
     </div>
 
-
+   
 
     <script>
 
 
+// joueur commence avec X
+let joueur = 'X'; 
+// etat du jeu
+let EtatJeu = ['', '', '', '', '', '', '', '', '']; 
+// Arret du jeu
+let FinDePartie = false; 
+
+// initialise les scores a 0
+let joueur1Score = 0;
+let joueur2Score = 0;
+let egalite = 0;
+
+// recuper tous les cases div 
+const bouton = document.getElementsByClassName("btn");
+const resetBtn = document.getElementById("reset-btn");
 
 
-
-        
-
-        
-
-        const bouton = document.getElementsByClassName('btn')[2]
-        bouton.addEventListener('click', function () {
-            console.log(bouton)
-
-        })
-        
-        
-
-        const user1 = "X";
-        const user2 = "O";
-
-       function playGame() {
-
-        bouton.addEventListener('click', function() {
-            
-            switch (bouton) {
-  case 0:
-  bouton[0].addEventListener('click', function () {
-            console.log(bouton)
-        })
-    console.log('click 1');
-    break;
-    case bouton[1]:
-    console.log('click 2');
-    break;
-    case bouton[2]:
-    console.log('click 3');
-    break;
-    console.log('');
-    
-  default:
-    console.log(`not working`);
-}
-})
-
-       }
-
-       playGame()
-
-
-        function Win() {
-            const winCombinations = [
-                [1, 2, 3],
-                [4, 5, 6],
-                [7, 8, 9],
-                [1, 4, 7],
-                [2, 5, 8],
-                [3, 6, 9],
-                [1, 5, 9],
-                [3, 5, 7]
-            ];
-
-            for (let winCombinations = 0; i < winCombinations.length; i++) {
-                if (
-                    btn.textContent == btn[winCombinations.length]
-                ) {
-                    alert('You win')
-                    return true;
-                } else {
-                    alert('Tie')
-                }
-            }
+// ajoute un addeventlistener a tout les boutons
+for (let i = 0; i < bouton.length; i++) {
+    bouton[i].addEventListener("click", function() {
+        // Verifie si le bouton est deja clique ou jeu deja finit
+        if (this.innerHTML !== "" || FinDePartie) {
+            return;
         }
+        // change le texte et l'etat du jeu
+        // change le texte du bouton a X ou O
+        this.innerHTML = joueur;
+        // convertir l'id a son index
+        EtatJeu[this.id - 1] = joueur;
+        // Check si jeu gagne ou egalite
+        Victoire();
+        Egaliter();
+        // change de joueur
+        if (joueur === 'X') {
+            joueur = 'O';
+        } else {
+            joueur = 'X';
+        }
+    });
+}
 
+// fonction pour checker en cas de victoire
+function Victoire() {
+    // Combinaitons possible pour gagner
+    let BonneCombinaison = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    // Verifie chaque combinaitions possible
+    for (let i = 0; i < BonneCombinaison.length; i++) {
+        if (EtatJeu[BonneCombinaison[i][0]] === joueur &&
+            EtatJeu[BonneCombinaison[i][1]] === joueur &&
+            EtatJeu[BonneCombinaison[i][2]] === joueur) {
+                // alert le vainqueur
+                alert(joueur + " wins!");
+                FinDePartie = true;
+                if (joueur === 'X') {
+            joueur1Score++;
+            document.getElementById("score1").innerHTML = joueur1Score;
+            const db = client.db('morpion');
+    db.collection('score').insertOne({joueur: 'X', score: joueur1Score});
+        } else {
+            joueur2Score++;
+            document.getElementById("score2").innerHTML = joueur2Score;
+            const db = client.db('morpion');
+            db.collection('score').insertOne({joueur: 'O', score: joueur2Score});
+        }
+                return;
+            }
+    }
+}
+
+// fonction en cas d'egaliter
+function Egaliter() {
+    if (!EtatJeu.includes('')) {
+        alert("Egaliter!");
+        FinDePartie = true;
+        egalite++;
+        document.getElementById("nul").innerHTML = egalite;
+    }
+}
+// remet les div vides
+
+resetBtn.addEventListener("click", function() {
+    // remet l'etat du jeu a vide
+    EtatJeu = ['', '', '', '', '', '', '', '', ''];
+    // remet tout les boutons a vide
+    for (let i = 0; i < bouton.length; i++) {
+        bouton[i].innerHTML = "";
+    }
+    // remet le jeu a non fini
+    FinDePartie = false;
+    // remet le joueur a X
+    joueur = 'X';
+});
+
+
+
+        
+   
 
 
 
