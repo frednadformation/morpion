@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container text-center" style="margin: 300px 0px 0px 850px;">
+        <div class="row">
+            <div class="btn"  id="1" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="2" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="3" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+        </div>
+        <div class="row">
+            <div class="btn" id="4" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="5" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="6" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+        </div>
+        <div class="row">
+            <div class="btn" id="7" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="8" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="9" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+        </div>
+    </div>
+
+
+
+    <script>
+
+
+
+
+
+        
+
+        
+
+        const bouton = document.getElementsByClassName('btn')[2]
+        bouton.addEventListener('click', function () {
+            console.log(bouton)
+
+        })
+        
+        
+
+        const user1 = "X";
+        const user2 = "O";
+
+       function playGame() {
+
+        bouton.addEventListener('click', function() {
+            
+            switch (bouton) {
+  case 0:
+  bouton[0].addEventListener('click', function () {
+            console.log(bouton)
+        })
+    console.log('click 1');
+    break;
+    case bouton[1]:
+    console.log('click 2');
+    break;
+    case bouton[2]:
+    console.log('click 3');
+    break;
+    console.log('');
+    
+  default:
+    console.log(`not working`);
+}
+})
+
+       }
+
+       playGame()
+
+
+        function Win() {
+            const winCombinations = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [1, 4, 7],
+                [2, 5, 8],
+                [3, 6, 9],
+                [1, 5, 9],
+                [3, 5, 7]
+            ];
+
+            for (let winCombinations = 0; i < winCombinations.length; i++) {
+                if (
+                    btn.textContent == btn[winCombinations.length]
+                ) {
+                    alert('You win')
+                    return true;
+                } else {
+                    alert('Tie')
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
