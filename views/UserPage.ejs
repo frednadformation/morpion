@@ -11,28 +11,39 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 
-<body>
-    <div class="container text-center" style="margin: 5% 5% 0% 40%; ">
-        <div class="row">
-            <div class="btn" id="1" style="border: 2px solid black;height: 120px; width: 120px;"></div>
-            <div class="btn" id="2" style="border: 2px solid black;height: 120px; width: 120px;"></div>
-            <div class="btn" id="3" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+<body style="background-color:#444 ;">
+    <div class="container text-center" style="margin: 6% 5% 0% 40%; ">
+        <div class="row" >
+            <div class="btn" id="1" style="border: 6px solid rgb(0, 0, 0);height: 120px; width: 120px;background-color: aqua; font-size: 60px;"></div>
+            <div class="btn" id="2" style="border: 6px solid black;height: 120px; width: 120px; background-color: aquamarine;font-size: 60px; "></div>
+            <div class="btn" id="3" style="border: 6px solid black;height: 120px; width: 120px;background-color: aqua;font-size: 60px;"></div>
         </div>
         <div class="row">
-            <div class="btn" id="4" style="border: 2px solid black;height: 120px; width: 120px;"></div>
-            <div class="btn" id="5" style="border: 2px solid black;height: 120px; width: 120px;"></div>
-            <div class="btn" id="6" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="4" style="border: 6px solid black;height: 120px; width: 120px; background-color: aquamarine;font-size: 60px;"></div>
+            <div class="btn" id="5" style="border: 6px solid black;height: 120px; width: 120px;background-color: aqua;font-size: 60px; "></div>
+            <div class="btn" id="6" style="border: 6px solid black;height: 120px; width: 120px; background-color: aquamarine;font-size: 60px;"></div>
         </div>
         <div class="row">
-            <div class="btn" id="7" style="border: 2px solid black;height: 120px; width: 120px;"></div>
-            <div class="btn" id="8" style="border: 2px solid black;height: 120px; width: 120px;"></div>
-            <div class="btn" id="9" style="border: 2px solid black;height: 120px; width: 120px;"></div>
+            <div class="btn" id="7" style="border: 6px solid black;height: 120px; width: 120px;background-color: aqua;font-size: 60px;"></div>
+            <div class="btn" id="8" style="border: 6px solid black;height: 120px; width: 120px;background-color: aquamarine;font-size: 60px;"></div>
+            <div class="btn" id="9" style="border: 6px solid black;height: 120px; width: 120px;background-color: aqua;font-size: 60px;"></div>
         </div>
         <div id="score">
-            <p>Score Joueur 1 : <span id="score1">0</span></p>
-            <p>Score Joueur 2 : <span id="score2">0</span></p>
-            <p>Match nuls : <span id="nul">0</span></p>
-            <button id="reset-btn">Reset Game</button>
+            <p style="width: 350px; font-size: 24px; color: aqua;"> Score <%= data.username %> : <span id="score1"><%= data.win %></span></p>
+            <p style="width: 350px; font-size: 24px;color: aquamarine;">Score <%= data.username %> : <span id="score2"><%= data.win %></span></p>
+            <p style="width: 350px; font-size: 24px;color: aqua;">Match nuls : <span id="nul">0</span></p>
+            <button id="reset-btn" style="margin-right: 970px;padding: 10px; border-radius: 25px;">Reset Game</button>
+
+            <form action="/api/score/<%= data.id %>?_method=PUT" method="post">
+                <input type="hidden" name="_method" value="PUT">
+
+                <input style="display: none;"  type="number" name="score1" value="<%= data.win %>" id="track">
+                <br>
+                <input  style="display: none;" type="number" name="score2" value="<%= data.win %>" id="track2">
+                <input type="submit" id="alert" value="Sauvegarder" style="margin-right: 970px ; padding: 10px; border-radius: 25px;">
+             
+
+            </form>
 
         </div>
         
@@ -42,24 +53,32 @@
 
     <script>
 
+        let alertbtn = document.getElementById('alert')
+
+        alertbtn.addEventListener('click', function() {
+            alert('Partie Sauvegarder')
+        })
+
+
 
 // joueur commence avec X
 let joueur = 'X'; 
+
+// const change = document.getElementsByClassName('btn');
+
+// change.style.fontSize = '10px';
+
 // etat du jeu
 let EtatJeu = ['', '', '', '', '', '', '', '', '']; 
 // Arret du jeu
 let FinDePartie = false; 
-
 // initialise les scores a 0
 let joueur1Score = 0;
 let joueur2Score = 0;
 let egalite = 0;
-
 // recuper tous les cases div 
 const bouton = document.getElementsByClassName("btn");
 const resetBtn = document.getElementById("reset-btn");
-
-
 // ajoute un addeventlistener a tout les boutons
 for (let i = 0; i < bouton.length; i++) {
     bouton[i].addEventListener("click", function() {
@@ -83,7 +102,6 @@ for (let i = 0; i < bouton.length; i++) {
         }
     });
 }
-
 // fonction pour checker en cas de victoire
 function Victoire() {
     // Combinaitons possible pour gagner
@@ -103,24 +121,27 @@ function Victoire() {
             EtatJeu[BonneCombinaison[i][1]] === joueur &&
             EtatJeu[BonneCombinaison[i][2]] === joueur) {
                 // alert le vainqueur
-                alert(joueur + " wins!");
+                
                 FinDePartie = true;
+                alert(joueur + " wins!");
                 if (joueur === 'X') {
             joueur1Score++;
             document.getElementById("score1").innerHTML = joueur1Score;
+            document.getElementById('track').value = joueur1Score;
+            
+
             const db = client.db('morpion');
     db.collection('score').insertOne({joueur: 'X', score: joueur1Score});
         } else {
             joueur2Score++;
             document.getElementById("score2").innerHTML = joueur2Score;
-            const db = client.db('morpion');
-            db.collection('score').insertOne({joueur: 'O', score: joueur2Score});
+            document.getElementById('track2').value =  joueur2Score;
+            
         }
                 return;
             }
     }
 }
-
 // fonction en cas d'egaliter
 function Egaliter() {
     if (!EtatJeu.includes('')) {
@@ -131,7 +152,6 @@ function Egaliter() {
     }
 }
 // remet les div vides
-
 resetBtn.addEventListener("click", function() {
     // remet l'etat du jeu a vide
     EtatJeu = ['', '', '', '', '', '', '', '', ''];
@@ -144,19 +164,8 @@ resetBtn.addEventListener("click", function() {
     // remet le joueur a X
     joueur = 'X';
 });
-
-
-
         
    
-
-
-
-
-
-
-
-
     </script>
 
 </body>
