@@ -1,6 +1,7 @@
 // lancer express et utuliser
 const express = require('express')
 const app = express()
+
 // lancer moongoose
 const mongoose =  require('mongoose')
 // separer le l'url pour le securiser
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false}))
 app.set('view engine', 'ejs')
 // utuliser le modele
 const User = require('./models/User')
+const { post } = require('moongose/routes')
 
 
 // connection base de donnes
@@ -43,12 +45,32 @@ app.post('/api/register', function(req,res) {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
         admin : false,
+        win : 0,
     })
     Data.save().then(()=>{
         console.log('Data saved')
         res.redirect('/login')
     }).catch(err => { console.log(err)});
 })
+app.put('/api/score/:id', function(req,res){
+    User.findOne({
+        _id : req.params.id
+    }).then(data => {
+        data.win  = req.body.score1;
+        console.log(data);
+        data.save().then(()=>{
+            console.log('Data saved')
+            res.render('UserPage',{data : data})
+        }).catch(err => { console.log(err)});;
+    }).catch(err => { console.log(err)});
+})
+
+app.get('/score', function(req,res) {
+    res.redirect('/Victoire')
+})
+
+    
+
 // rediriger vers la pager Register
 app.get('/register', function(req,res) {
     res.render('Register');
@@ -66,8 +88,7 @@ app.post('/api/login', function(req,res) {
         {
             return res.status(404).send('Password Invalid!');
         }
-        res.redirect('/userpage',);
-        // res.redirect('/UserPage');
+        res.render('UserPage', {data : user});        
     }).catch(err => {console.log(err)})
 })
 
